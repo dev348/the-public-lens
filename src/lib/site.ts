@@ -7,6 +7,17 @@ export const SITE = {
   // TODO: replace with the real contact email and social links.
   email: 'hello@example.com',
   social: [] as { label: string; url: string }[],
+  /**
+   * Newsletter signup. The form posts straight to the newsletter service.
+   * Buttondown (free up to 100 subscribers): set `action` to
+   *   https://buttondown.com/api/emails/embed-subscribe/<your-username>
+   * Mailchimp: paste the form "action" URL from its embedded-form code and set emailField to "EMAIL".
+   * Leave `action` empty until an account exists; the form then shows "coming soon".
+   */
+  newsletter: {
+    action: '',
+    emailField: 'email',
+  },
 };
 
 export const CATEGORY_SLUGS = [

@@ -1,0 +1,157 @@
+---
+import { SITE } from '../lib/site';
+
+interface Props { lang?: 'en' | 'mr' }
+const { lang = 'en' } = Astro.props;
+const mr = lang === 'mr';
+const { action, emailField } = SITE.newsletter;
+
+const t = mr
+  ? {
+      kicker: 'वृत्तपत्र',
+      title: 'नवीन लेख थेट तुमच्या इनबॉक्समध्ये',
+      body: 'राजकारण, समाज आणि लोकांच्या गोष्टींवरील नवीन लेख ईमेलद्वारे मिळवा. स्पॅम नाही, कधीही सदस्यत्व रद्द करा.',
+      label: 'तुमचा ईमेल',
+      placeholder: 'तुमचा ईमेल पत्ता',
+      button: 'सदस्य व्हा',
+      thanks: 'धन्यवाद! तुमचे सदस्यत्व पक्के करण्यासाठी तुमचा ईमेल तपासा.',
+      soon: 'वृत्तपत्र लवकरच सुरू होत आहे.',
+    }
+  : {
+      kicker: 'Newsletter',
+      title: 'New writing, straight to your inbox',
+      body: 'Get new articles on politics, society and ground stories by email, in English and Marathi. No spam. Unsubscribe anytime.',
+      label: 'Your email',
+      placeholder: 'you@example.com',
+      button: 'Subscribe',
+      thanks: 'Thank you! Please check your email to confirm your subscription.',
+      soon: 'The newsletter is launching soon.',
+    };
+---
+<section class="newsletter" aria-labelledby="newsletter-title" data-pagefind-ignore>
+  <div class="wrap newsletter-inner">
+    <div class="newsletter-copy">
+      <div class="newsletter-kicker">{t.kicker}</div>
+      <h2 id="newsletter-title">{t.title}</h2>
+      <p>{t.body}</p>
+    </div>
+    <form
+      class="newsletter-form"
+      action={action || undefined}
+      method="post"
+      target="_blank"
+      data-newsletter
+      data-configured={action ? 'yes' : 'no'}
+      data-thanks={t.thanks}
+      data-soon={t.soon}
+    >
+      <label class="visually-hidden" for="newsletter-email">{t.label}</label>
+      <input
+        id="newsletter-email"
+        type="email"
+        name={emailField}
+        required
+        autocomplete="email"
+        inputmode="email"
+        placeholder={t.placeholder}
+      />
+      <input type="hidden" name="tag" value={mr ? 'marathi' : 'english'} />
+      <button type="submit">{t.button}</button>
+      <p class="newsletter-status" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>('[data-newsletter]').forEach((form) => {
+    const status = form.querySelector<HTMLElement>('.newsletter-status')!;
+    form.addEventListener('submit', (e) => {
+      if (form.dataset.configured !== 'yes') {
+        e.preventDefault();
+        status.textContent = form.dataset.soon ?? '';
+        return;
+      }
+      // The service opens its confirmation page in a new tab; show a note here too.
+      setTimeout(() => {
+        status.textContent = form.dataset.thanks ?? '';
+        form.reset();
+      }, 50);
+    });
+  });
+</script>
+
+<style>
+  .newsletter {
+    background: var(--gold-soft);
+    border-top: 3px solid var(--gold);
+    padding: 44px 0;
+  }
+  .newsletter-inner {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 32px;
+    align-items: center;
+  }
+  .newsletter-kicker {
+    color: var(--gold-text);
+    font-weight: 600;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .newsletter h2 {
+    font-family: var(--serif);
+    color: var(--navy);
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    line-height: 1.25;
+    margin: 6px 0 8px;
+  }
+  .newsletter p {
+    margin: 0;
+    color: var(--charcoal);
+    max-width: 52ch;
+  }
+  .newsletter-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .newsletter-form input[type='email'] {
+    flex: 1 1 220px;
+    min-width: 0;
+    padding: 12px 16px;
+    font: inherit;
+    font-size: 1rem;
+    border: 1px solid #cdbf9f;
+    border-radius: 999px;
+    background: var(--paper);
+    color: var(--charcoal);
+  }
+  .newsletter-form input[type='email']:focus {
+    outline: 2px solid var(--navy);
+    outline-offset: 1px;
+  }
+  .newsletter-form button {
+    flex: none;
+    padding: 12px 22px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--navy);
+    color: var(--ivory);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .newsletter-form button:hover { background: var(--navy-2); }
+  .newsletter-status {
+    flex-basis: 100%;
+    font-size: 0.92rem;
+    color: var(--navy);
+    min-height: 1.4em;
+  }
+  @media (max-width: 760px) {
+    .newsletter { padding: 36px 0; }
+    .newsletter-inner { grid-template-columns: 1fr; gap: 20px; }
+    .newsletter-form button { flex: 1 1 100%; }
+  }
+</style>

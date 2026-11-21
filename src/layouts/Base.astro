@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import Logo from '../components/Logo.astro';
+import Newsletter from '../components/Newsletter.astro';
 import { SITE, CATEGORIES, CATEGORY_SLUGS, url } from '../lib/site';
 
 interface Props {
@@ -112,6 +113,8 @@ const toggleHref = altLangHref ?? (mr ? '/' : '/mr/');
     <main id="main">
       <slot />
     </main>
+
+    <Newsletter lang={lang} />
 
     <footer class="footer">
       <div class="wrap">

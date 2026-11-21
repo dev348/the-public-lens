@@ -42,6 +42,11 @@ Private drafts, notes and research material stay in Google Drive or a separate *
 ### Things to fill in
 
 - `src/lib/site.ts`: contact email and social links
+- `src/lib/site.ts` → `newsletter.action`: the signup form shows "launching soon" until this is set.
+  The easiest option is [Buttondown](https://buttondown.com), free for up to 100 subscribers. Create an account, then set
+  `action: 'https://buttondown.com/api/emails/embed-subscribe/<username>'`. Signups are tagged
+  `english` or `marathi` depending on the page they came from. For Mailchimp, paste its embed-form
+  action URL and set `emailField: 'EMAIL'`.
 - Delete the four `[Sample]` articles in `src/content/articles/` once real ones exist
 
 ## Running locally
