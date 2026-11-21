@@ -3,7 +3,7 @@
 Independent writing in English and Marathi. *Understanding society. Questioning power. Amplifying voices.*
 
 - **Website:** an [Astro](https://astro.build) static site, hosted free on GitHub Pages.
-- **Editor:** [Pages CMS](https://pagescms.org). Mithila writes and publishes from the browser, with no code involved.
+- **Writing:** Google Docs in a shared Drive folder, synced every 15 minutes ([setup](SETUP-GOOGLE-DOCS.md)). [Pages CMS](https://pagescms.org) is also available as a browser editor.
 - **Search:** [Pagefind](https://pagefind.app). One search box covers English and Marathi.
 - **Backups:** every save is a git commit, so all history is kept and any version can be restored.
 - **Security:** plain static pages, with no server, database or login page to attack.
@@ -11,6 +11,11 @@ Independent writing in English and Marathi. *Understanding society. Questioning 
 ---
 
 ## For Mithila: publishing an article
+
+**Recommended: write in Google Docs.** Copy the article template in the *The Public Lens – Articles* Drive
+folder, fill it in, and set Status to **Publish**. See [SETUP-GOOGLE-DOCS.md](SETUP-GOOGLE-DOCS.md).
+
+**Alternative: the site editor (Pages CMS)**, useful for quick fixes:
 
 1. Go to **https://app.pagescms.org** and sign in with GitHub.
 2. Open the **the-public-lens** repository, then **Articles / लेख**.

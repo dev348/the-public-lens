@@ -1,0 +1,53 @@
+---
+// Not linked from the site and hidden from search engines. Mithila can open it to see
+// why a Google Doc marked "Publish" did not appear.
+import Base from '../layouts/Base.astro';
+import report from '../data/sync-report.json';
+import { getArticles, articlePath } from '../lib/articles';
+import { url, formatDate } from '../lib/site';
+
+const problems = (report.problems ?? []) as { title: string; reasons: string[] }[];
+const updatedAt = (report as { updatedAt?: string }).updatedAt;
+const fromDocs = (await getArticles()).filter((a) => a.data.gdocId);
+---
+<Base title="Publishing status" current="status">
+  <meta slot="head" name="robots" content="noindex, nofollow" />
+  <div class="wrap narrow">
+    <header class="page-head">
+      <div class="kicker">Publishing status · <span lang="mr">प्रकाशन स्थिती</span></div>
+      <h1>Google Docs publishing</h1>
+      <p>
+        Docs marked <strong>Publish</strong> appear on the site within about 15 minutes.
+        If one is missing, the reason is listed here.
+      </p>
+    </header>
+
+    <div class="prose" style="margin:0">
+      <h2>Needs attention</h2>
+      {problems.length === 0 ? (
+        <p>✅ No problems. Every Doc marked Publish is on the site.</p>
+      ) : (
+        <ul>
+          {problems.map((p) => (
+            <li><strong>{p.title}</strong>: {p.reasons.join(' ')}</li>
+          ))}
+        </ul>
+      )}
+      {updatedAt && <p style="color:var(--muted);font-size:.9rem">Last change to this list: {new Date(updatedAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</p>}
+
+      <h2>Published from Google Docs ({fromDocs.length})</h2>
+      {fromDocs.length === 0 ? (
+        <p>None yet.</p>
+      ) : (
+        <ul>
+          {fromDocs.map((a) => (
+            <li>
+              <a href={url(articlePath(a))} lang={a.data.lang}>{a.data.title}</a>
+              <span style="color:var(--muted)"> · {formatDate(a.data.date, a.data.lang)}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  </div>
+</Base>

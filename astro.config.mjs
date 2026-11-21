@@ -40,6 +40,6 @@ export default defineConfig({
   site: process.env.SITE_URL || 'https://example.github.io',
   base,
   trailingSlash: 'ignore',
-  integrations: [sitemap()],
+  integrations: [sitemap({ filter: (page) => !page.includes('/sync-status') })],
   markdown: { rehypePlugins: [rehypePrefixBase] },
 });

@@ -1,0 +1,55 @@
+name: Sync articles from Google Docs
+
+on:
+  schedule:
+    - cron: '*/15 * * * *' # every 15 minutes (GitHub may run it a few minutes late)
+  workflow_dispatch:
+    inputs:
+      allow_mass_unpublish:
+        description: 'Allow removing many articles at once (only if you really moved/deleted them)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write # commit synced articles
+  actions: write # start the "Publish website" workflow
+
+concurrency:
+  group: google-docs-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      - name: Fetch Docs marked "Publish"
+        run: node scripts/sync-drive.mjs
+        env:
+          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+          DRIVE_FOLDER_ID: ${{ vars.DRIVE_FOLDER_ID }}
+          ALLOW_MASS_UNPUBLISH: ${{ inputs.allow_mass_unpublish && '1' || '' }}
+
+      - name: Save changes and publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git add -A src/content/gdocs public/uploads/gdocs src/data/sync-report.json
+          if git diff --cached --quiet; then
+            echo "No changes from Google Docs."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Sync articles from Google Docs"
+          git pull --rebase origin main
+          git push origin HEAD:main
+          # Pushes made by this workflow don't trigger other workflows, so start the deploy directly.
+          gh workflow run deploy.yml --ref main

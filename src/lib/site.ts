@@ -1,3 +1,5 @@
+import categoriesJson from './categories.json';
+
 export const SITE = {
   name: 'The Public Lens',
   tagline: 'Understanding society. Questioning power. Amplifying voices.',
@@ -38,36 +40,8 @@ export const CATEGORY_SLUGS = [
 ] as const;
 export type CategorySlug = (typeof CATEGORY_SLUGS)[number];
 
-export const CATEGORIES: Record<
-  CategorySlug,
-  { en: string; mr: string; blurb: string }
-> = {
-  politics: {
-    en: 'Politics',
-    mr: 'राजकारण',
-    blurb: "Elections, government, public decisions and people's rights.",
-  },
-  society: {
-    en: 'Society',
-    mr: 'समाज',
-    blurb: 'Caste, gender, tribal communities, workers and social issues.',
-  },
-  'education-development': {
-    en: 'Education & Development',
-    mr: 'शिक्षण आणि विकास',
-    blurb: 'Schools, health, jobs, migration and village development.',
-  },
-  'ground-stories': {
-    en: 'Ground Stories',
-    mr: 'जमिनीवरच्या गोष्टी',
-    blurb: 'Experiences and concerns of people from villages, towns and cities.',
-  },
-  'ideas-books': {
-    en: 'Ideas & Books',
-    mr: 'विचार आणि पुस्तके',
-    blurb: 'Opinions, explainers, book reviews and reflections.',
-  },
-};
+// Section names live in categories.json so the Google Docs sync script uses the same list.
+export const CATEGORIES = categoriesJson as Record<CategorySlug, { en: string; mr: string; blurb: string }>;
 
 export const UI = {
   en: {

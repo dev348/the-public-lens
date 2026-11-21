@@ -16,8 +16,9 @@ const owners = new Map<string, string>();
 
 const articles = defineCollection({
   loader: glob({
-    pattern: '**/*.md',
-    base: './src/content/articles',
+    // articles/ = written in the site editor (Pages CMS); gdocs/ = synced from Google Docs.
+    pattern: '{articles,gdocs}/**/*.md',
+    base: './src/content',
     // The id is "<lang>/<slug>", so an English and a Marathi article can share
     // the same web address without overwriting each other.
     generateId: ({ entry, data }) => {
@@ -53,6 +54,9 @@ const articles = defineCollection({
     ),
     featured: boolDefault(false),
     draft: boolDefault(false),
+    // Set on articles synced from Google Docs.
+    gdocId: optStr(),
+    gdocModified: optStr(),
   }),
 });
 
