@@ -31,15 +31,17 @@ const related = (await getArticles({ lang: d.lang, category: d.category }))
   <article data-pagefind-body>
     <div class="wrap">
       <header class="article-head">
-        <a class="kicker" href={url(`/${d.category}/`)} data-pagefind-filter="section">{catLabel}</a>
+        <a class="kicker" href={url(`/${d.category}/`)} data-pagefind-ignore>{catLabel}</a>
+        <meta data-pagefind-filter="section[content]" content={catLabel} />
         <h1 data-pagefind-meta="title">{d.title}</h1>
         {d.description && <p class="dek">{d.description}</p>}
-        <div class="byline">
-          <span>{t.by} <strong data-pagefind-filter="author">{d.author}</strong></span>
+        <div class="byline" data-pagefind-ignore>
+          <span>{t.by} <strong>{d.author}</strong></span>
           <time datetime={d.date.toISOString()}>{formatDate(d.date, d.lang)}</time>
           {d.updated && <span>{t.updated}: {formatDate(d.updated, d.lang)}</span>}
-          <span>{minutes} {d.lang === 'mr' ? 'मिनिटे वाचन' : 'min read'}</span>
-          <span hidden data-pagefind-filter="language">{d.lang === 'mr' ? 'मराठी' : 'English'}</span>
+          <span>{d.lang === 'mr' ? `${minutes.toLocaleString('mr-IN')} मिनिटे वाचन` : `${minutes} min read`}</span>
+          <meta data-pagefind-filter="author[content]" content={d.author} />
+          <meta data-pagefind-filter="language[content]" content={d.lang === 'mr' ? 'मराठी' : 'English'} />
           {translationHref && (
             <a class="translation-link" href={url(translationHref)} lang={translation!.data.lang}>{t.readIn} →</a>
           )}
