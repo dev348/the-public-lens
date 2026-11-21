@@ -18,6 +18,15 @@ export const SITE = {
     action: '',
     emailField: 'email',
   },
+  /**
+   * WhatsApp. Leave empty to hide.
+   * channel: link to a WhatsApp Channel (WhatsApp → Updates → Channels → Create), e.g. https://whatsapp.com/channel/XXXX
+   * number:  number readers can message with story tips, international format without + or spaces, e.g. 919876543210
+   */
+  whatsapp: {
+    channel: '',
+    number: '',
+  },
 };
 
 export const CATEGORY_SLUGS = [

@@ -1,0 +1,65 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE } from '../lib/site';
+// NOTE: Draft editorial policy. Mithila should read and adjust every line before launch.
+---
+<Base title="Our standards" current="standards" description="How The Public Lens checks facts, corrects mistakes, stays independent and protects the people it writes about.">
+  <div class="wrap narrow">
+    <header class="page-head">
+      <div class="kicker">Our standards · <span lang="mr">आमची मूल्ये आणि निकष</span></div>
+      <h1>How we work</h1>
+      <p>Readers should be able to judge our writing for themselves. This page explains how we check facts, how we correct mistakes, and who we answer to.</p>
+    </header>
+
+    <div class="prose" style="margin:0">
+      <h2>Facts and sources</h2>
+      <ul>
+        <li>Every factual claim should be traceable. We list our sources at the end of each article and link to them wherever possible.</li>
+        <li>We prefer primary sources: official data, government documents, court records, research papers and first-hand interviews.</li>
+        <li>We separate reporting from opinion. Opinion pieces, reviews and reflections are published under <strong>Ideas &amp; Books</strong>.</li>
+      </ul>
+
+      <h2>Corrections</h2>
+      <p>
+        When we get something wrong, we fix it openly. Corrected articles show an <strong>“Updated”</strong> date,
+        and significant corrections are noted at the end of the article. To report an error, write to
+        <a href={`mailto:${SITE.email}`}>{SITE.email}</a> with the article link and what needs correcting.
+      </p>
+
+      <h2>Independence</h2>
+      <p>
+        The Public Lens is not affiliated with, funded by, or speaking for any political party, candidate or government.
+        We do not accept payment to publish, change or remove an article.
+      </p>
+      <p class="todo">
+        <strong>Funding:</strong> [Mithila to fill in: how the site is funded, e.g. self-funded, reader donations,
+        grants. Name any organisation that provides money.]
+      </p>
+
+      <h2>People we write about</h2>
+      <ul>
+        <li>We ask for consent before publishing anyone's name, photo or personal story.</li>
+        <li>We can protect a person's identity when speaking openly could put them at risk.</li>
+        <li>We give people and institutions we criticise a fair chance to respond.</li>
+      </ul>
+
+      <h2>Two languages, one standard</h2>
+      <p>
+        English and Marathi articles follow the same rules. A translated article is marked with a link to the other version.
+      </p>
+      <p lang="mr">
+        इंग्रजी आणि मराठी लेखांसाठी आमचे निकष सारखेच आहेत. चूक आढळल्यास आम्ही ती उघडपणे दुरुस्त करतो.
+        आम्ही कोणत्याही राजकीय पक्षाशी संबंधित नाही.
+      </p>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .todo {
+    outline: 2px dashed var(--gold);
+    outline-offset: 6px;
+    border-radius: 4px;
+    background: var(--gold-soft);
+  }
+</style>

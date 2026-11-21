@@ -13,6 +13,15 @@ import { SITE } from '../lib/site';
       <p>
         Email: <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
       </p>
+      {SITE.whatsapp.number && (
+        <p>
+          WhatsApp: <a href={`https://wa.me/${SITE.whatsapp.number}?text=${encodeURIComponent('Hello, I have a story for The Public Lens:')}`} target="_blank" rel="noopener">Send us a message</a>
+          {' '}(text, voice notes and photos are welcome / <span lang="mr">मजकूर, व्हॉइस नोट आणि फोटो पाठवू शकता</span>)
+        </p>
+      )}
+      {SITE.whatsapp.channel && (
+        <p>Follow our updates on the <a href={SITE.whatsapp.channel} target="_blank" rel="noopener">WhatsApp channel</a>.</p>
+      )}
       <p>
         If you want to share a story from your village, town or city, tell us briefly what happened, where,
         and how we can reach you. We read every message. We will never publish your name or details

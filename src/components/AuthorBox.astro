@@ -1,0 +1,77 @@
+---
+import { findAuthor } from '../lib/authors';
+import { url } from '../lib/site';
+
+interface Props { name: string; lang?: 'en' | 'mr' }
+const { name, lang = 'en' } = Astro.props;
+const mr = lang === 'mr';
+const author = findAuthor(name);
+const initials = author?.initials
+  ?? name.split(/\s+/).filter(Boolean).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
+---
+<aside class="author-box" aria-label={mr ? 'लेखकाविषयी' : 'About the author'} data-pagefind-ignore>
+  {author?.photo ? (
+    <img class="author-photo" src={url(author.photo)} alt="" width="72" height="72" loading="lazy" />
+  ) : (
+    <div class="author-photo author-initials" aria-hidden="true">{initials}</div>
+  )}
+  <div>
+    <div class="author-label">{mr ? 'लेखकाविषयी' : 'About the author'}</div>
+    <div class="author-name">{name}</div>
+    {author && <div class="author-role">{author.role[lang]}</div>}
+    {author && <p>{author.bio[lang]}</p>}
+    <div class="author-links">
+      <a href={url('/about/')}>{mr ? 'द पब्लिक लेन्सविषयी' : 'About The Public Lens'}</a>
+      <a href={url('/standards/')}>{mr ? 'आमची मूल्ये आणि निकष' : 'Our standards'}</a>
+    </div>
+  </div>
+</aside>
+
+<style>
+  .author-box {
+    display: grid;
+    grid-template-columns: 72px 1fr;
+    gap: 18px;
+    align-items: start;
+    padding: 22px 0;
+    margin: 28px 0 24px;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .author-photo {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .author-initials {
+    display: grid;
+    place-items: center;
+    background: var(--navy);
+    color: var(--gold-soft);
+    font-family: var(--serif);
+    font-size: 1.5rem;
+  }
+  .author-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold-text);
+    font-weight: 600;
+  }
+  .author-name {
+    font-family: var(--serif);
+    font-weight: 700;
+    color: var(--navy);
+    font-size: 1.15rem;
+    margin-top: 2px;
+  }
+  .author-role { color: var(--muted); font-size: 0.9rem; }
+  .author-box p { margin: 8px 0 10px; font-size: 0.95rem; }
+  .author-links { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 0.9rem; }
+  @media (max-width: 480px) {
+    .author-box { grid-template-columns: 56px 1fr; gap: 14px; }
+    .author-photo { width: 56px; height: 56px; }
+    .author-initials { font-size: 1.15rem; }
+  }
+</style>

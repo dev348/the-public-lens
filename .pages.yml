@@ -67,6 +67,7 @@ content:
         default: Mithila Manohar Raut
       - name: image
         label: Main photo
+        description: Strongly recommended, and needed for Ground Stories and featured articles. Photos of people and places make readers stop and read. Get consent from anyone pictured.
         type: image
       - name: imageAlt
         label: Photo description (for captions and screen readers)

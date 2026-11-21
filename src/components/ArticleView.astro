@@ -3,6 +3,7 @@ import { render } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import ShareButtons from './ShareButtons.astro';
 import ArticleCard from './ArticleCard.astro';
+import AuthorBox from './AuthorBox.astro';
 import { getArticles, articlePath, findTranslation, type Article } from '../lib/articles';
 import { CATEGORIES, UI, url, formatDate, readingMinutes } from '../lib/site';
 
@@ -73,6 +74,7 @@ const related = (await getArticles({ lang: d.lang, category: d.category }))
           </section>
         )}
         <ShareButtons title={d.title} lang={d.lang} />
+        <AuthorBox name={d.author} lang={d.lang} />
       </div>
     </div>
   </article>

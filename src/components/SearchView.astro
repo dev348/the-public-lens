@@ -1,0 +1,63 @@
+---
+import Base from '../layouts/Base.astro';
+import { url } from '../lib/site';
+
+interface Props { lang?: 'en' | 'mr' }
+const { lang = 'en' } = Astro.props;
+const mr = lang === 'mr';
+const bundle = url('/pagefind/');
+
+const t = mr
+  ? {
+      title: 'लेख शोधा',
+      intro: 'विषय, ठिकाण, नाव किंवा शब्द टाकून सर्व मराठी आणि इंग्रजी लेख शोधा.',
+      noJs: 'शोधासाठी JavaScript सुरू असणे आवश्यक आहे.',
+      unavailable: 'शोध सुविधा प्रकाशित वेबसाइटवर उपलब्ध आहे.',
+      ui: {
+        placeholder: 'लेख शोधा',
+        clear_search: 'पुसा',
+        load_more: 'आणखी निकाल दाखवा',
+        search_label: 'या साइटवर शोधा',
+        filters_label: 'फिल्टर',
+        zero_results: '[SEARCH_TERM] साठी काहीही सापडले नाही',
+        many_results: '[SEARCH_TERM] साठी [COUNT] निकाल',
+        one_result: '[SEARCH_TERM] साठी [COUNT] निकाल',
+        alt_search: '[SEARCH_TERM] साठी काहीही सापडले नाही. त्याऐवजी [DIFFERENT_TERM] चे निकाल दाखवत आहोत',
+        search_suggestion: '[SEARCH_TERM] साठी काहीही सापडले नाही. हे शोधून पाहा:',
+        searching: '[SEARCH_TERM] शोधत आहोत…',
+      },
+    }
+  : {
+      title: 'Search articles',
+      intro: 'Search across every English and Marathi article by topic, place, name or word.',
+      noJs: 'Search needs JavaScript turned on.',
+      unavailable: 'Search is available on the published site (it is built when the site is deployed).',
+      ui: {},
+    };
+---
+<Base title={mr ? 'शोधा' : 'Search'} lang={lang} current="search" altLangHref={mr ? '/search/' : '/mr/search/'}>
+  <link slot="head" rel="stylesheet" href={`${bundle}pagefind-ui.css`} />
+  <div class="wrap narrow">
+    <header class="page-head">
+      <div class="kicker">{mr ? 'शोधा · Search' : 'Search · '}{!mr && <span lang="mr">शोधा</span>}</div>
+      <h1>{t.title}</h1>
+      <p>{t.intro}</p>
+    </header>
+    <div id="search" class="search-box"></div>
+    <noscript><p>{t.noJs}</p></noscript>
+  </div>
+  <script is:inline define:vars={{ bundle, translations: t.ui, unavailable: t.unavailable }}>
+    const s = document.createElement('script');
+    s.src = bundle + 'pagefind-ui.js';
+    s.onload = () => {
+      const ui = new PagefindUI({ element: '#search', showSubResults: true, showImages: false, bundlePath: bundle, translations });
+      const q = new URLSearchParams(location.search).get('q');
+      if (q) ui.triggerSearch(q);
+    };
+    s.onerror = () => {
+      document.getElementById('search').innerHTML = '<p class="empty-note"></p>';
+      document.querySelector('#search .empty-note').textContent = unavailable;
+    };
+    document.body.appendChild(s);
+  </script>
+</Base>

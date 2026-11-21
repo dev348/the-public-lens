@@ -2,6 +2,7 @@
 import type { Article } from '../lib/articles';
 import { articlePath } from '../lib/articles';
 import { CATEGORIES, url, formatDate } from '../lib/site';
+import CardImage from './CardImage.astro';
 
 interface Props { article: Article; showLang?: boolean }
 const { article, showLang = false } = Astro.props;
@@ -10,13 +11,7 @@ const href = url(articlePath(article));
 const catLabel = d.lang === 'mr' ? CATEGORIES[d.category].mr : CATEGORIES[d.category].en;
 ---
 <article class="card" lang={d.lang}>
-  <a href={href} class:list={['card-img', { empty: !d.image }]} tabindex="-1" aria-hidden="true">
-    {d.image ? (
-      <img src={url(d.image)} alt="" loading="lazy" />
-    ) : (
-      <svg width="44" height="44" viewBox="0 0 48 48" fill="none"><path d="M8 24c4.5-7 10-10.5 16-10.5S35.5 17 40 24c-4.5 7-10 10.5-16 10.5S12.5 31 8 24Z" stroke="currentColor" stroke-width="2"/><circle cx="24" cy="24" r="6" fill="currentColor"/></svg>
-    )}
-  </a>
+  <CardImage image={d.image} category={d.category} lang={d.lang} href={href} />
   <div class="meta">
     <a class="cat" href={url(`/${d.category}/`)}>{catLabel}</a>
     {showLang && <span class="lang-badge">{d.lang === 'mr' ? 'मराठी' : 'EN'}</span>}

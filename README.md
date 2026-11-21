@@ -47,6 +47,11 @@ Private drafts, notes and research material stay in Google Drive or a separate *
   `action: 'https://buttondown.com/api/emails/embed-subscribe/<username>'`. Signups are tagged
   `english` or `marathi` depending on the page they came from. For Mailchimp, paste its embed-form
   action URL and set `emailField: 'EMAIL'`.
+- `src/lib/site.ts` → `whatsapp.channel` (WhatsApp Channel link) and `whatsapp.number` (for story tips).
+  Both stay hidden until filled in. They add a "Follow on WhatsApp" button, a footer link and a Contact-page option.
+- `src/lib/authors.ts`: author bios for the box at the end of each article. Add Mithila's photo as
+  `public/uploads/mithila.jpg` and set `photo: '/uploads/mithila.jpg'`. Check the Marathi bio wording.
+- `src/pages/standards.astro`: read the whole "Our standards" page and fill in the **Funding** paragraph (dashed box).
 - Delete the four `[Sample]` articles in `src/content/articles/` once real ones exist
 
 ## Running locally

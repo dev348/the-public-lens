@@ -2,8 +2,18 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 
 export type Article = CollectionEntry<'articles'>;
 
+let warned = false;
+
 export async function getArticles(opts: { lang?: 'en' | 'mr'; category?: string } = {}) {
   const all = await getCollection('articles', ({ data }) => !data.draft);
+  if (!warned) {
+    warned = true;
+    for (const a of all) {
+      if (!a.data.image && (a.data.featured || a.data.category === 'ground-stories')) {
+        console.warn(`[articles] "${a.data.title}" has no main photo. Ground Stories and featured articles should have one.`);
+      }
+    }
+  }
   return all
     .filter((a) => (opts.lang ? a.data.lang === opts.lang : true))
     .filter((a) => (opts.category ? a.data.category === opts.category : true))

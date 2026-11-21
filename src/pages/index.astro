@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import ArticleCard from '../components/ArticleCard.astro';
+import CardImage from '../components/CardImage.astro';
 import { getArticles, articlePath } from '../lib/articles';
 import { SITE, CATEGORIES, CATEGORY_SLUGS, url, formatDate } from '../lib/site';
 
@@ -17,13 +18,7 @@ const rest = english.filter((a) => a !== lead).slice(0, 6);
 
       {lead ? (
         <div class="lead">
-          <a class:list={['card-img', { empty: !lead.data.image }]} href={url(articlePath(lead))} tabindex="-1" aria-hidden="true">
-            {lead.data.image ? (
-              <img src={url(lead.data.image)} alt="" />
-            ) : (
-              <svg width="72" height="72" viewBox="0 0 48 48" fill="none"><path d="M8 24c4.5-7 10-10.5 16-10.5S35.5 17 40 24c-4.5 7-10 10.5-16 10.5S12.5 31 8 24Z" stroke="currentColor" stroke-width="2"/><circle cx="24" cy="24" r="6" fill="currentColor"/></svg>
-            )}
-          </a>
+          <CardImage image={lead.data.image} category={lead.data.category} lang={lead.data.lang} href={url(articlePath(lead))} large lazy={false} />
           <div>
             <div class="meta"><a class="cat" href={url(`/${lead.data.category}/`)}>{CATEGORIES[lead.data.category].en}</a></div>
             <h2><a href={url(articlePath(lead))}>{lead.data.title}</a></h2>
