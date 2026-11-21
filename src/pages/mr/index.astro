@@ -1,0 +1,37 @@
+---
+import Base from '../../layouts/Base.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { getArticles } from '../../lib/articles';
+import { SITE, CATEGORIES, CATEGORY_SLUGS, UI } from '../../lib/site';
+
+const articles = await getArticles({ lang: 'mr' });
+const t = UI.mr;
+const sections = CATEGORY_SLUGS.map((s) => ({
+  slug: s,
+  label: CATEGORIES[s].mr,
+  items: articles.filter((a) => a.data.category === s),
+})).filter((s) => s.items.length > 0);
+---
+<Base title="मराठी" lang="mr" current="mr" description={SITE.taglineMr}>
+  <div class="wrap">
+    <header class="page-head">
+      <div class="kicker">द पब्लिक लेन्स</div>
+      <h1>मराठी लेख</h1>
+      <p>{SITE.taglineMr}</p>
+    </header>
+
+    {articles.length === 0 && <p class="empty-note">{t.noArticles}</p>}
+
+    {articles.length > 0 && (
+      <>
+        <div class="cards">{articles.slice(0, 6).map((a) => <ArticleCard article={a} />)}</div>
+        {sections.map((s) => (
+          <>
+            <div class="section-title"><h2>{s.label}</h2></div>
+            <div class="cards">{s.items.map((a) => <ArticleCard article={a} />)}</div>
+          </>
+        ))}
+      </>
+    )}
+  </div>
+</Base>

@@ -1,0 +1,84 @@
+---
+import { render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import ShareButtons from './ShareButtons.astro';
+import ArticleCard from './ArticleCard.astro';
+import { getArticles, articlePath, findTranslation, type Article } from '../lib/articles';
+import { CATEGORIES, UI, url, formatDate, readingMinutes } from '../lib/site';
+
+interface Props { article: Article }
+const { article } = Astro.props;
+const d = article.data;
+const t = UI[d.lang];
+const { Content } = await render(article);
+const translation = await findTranslation(article);
+const translationHref = translation ? articlePath(translation) : undefined;
+const catLabel = d.lang === 'mr' ? CATEGORIES[d.category].mr : CATEGORIES[d.category].en;
+const minutes = readingMinutes(article.body);
+const related = (await getArticles({ lang: d.lang, category: d.category }))
+  .filter((a) => a.id !== article.id)
+  .slice(0, 3);
+---
+<Base
+  title={d.title}
+  description={d.description}
+  lang={d.lang}
+  image={d.image}
+  current={d.lang === 'mr' ? 'mr' : d.category}
+  altLangHref={translationHref}
+  type="article"
+>
+  <article data-pagefind-body>
+    <div class="wrap">
+      <header class="article-head">
+        <a class="kicker" href={url(`/${d.category}/`)} data-pagefind-filter="section">{catLabel}</a>
+        <h1 data-pagefind-meta="title">{d.title}</h1>
+        {d.description && <p class="dek">{d.description}</p>}
+        <div class="byline">
+          <span>{t.by} <strong data-pagefind-filter="author">{d.author}</strong></span>
+          <time datetime={d.date.toISOString()}>{formatDate(d.date, d.lang)}</time>
+          {d.updated && <span>{t.updated}: {formatDate(d.updated, d.lang)}</span>}
+          <span>{minutes} {d.lang === 'mr' ? 'मिनिटे वाचन' : 'min read'}</span>
+          <span hidden data-pagefind-filter="language">{d.lang === 'mr' ? 'मराठी' : 'English'}</span>
+          {translationHref && (
+            <a class="translation-link" href={url(translationHref)} lang={translation!.data.lang}>{t.readIn} →</a>
+          )}
+        </div>
+      </header>
+
+      {d.image && (
+        <figure class="hero-figure">
+          <img src={url(d.image)} alt={d.imageAlt} data-pagefind-meta="image[src]" />
+          {(d.imageAlt || d.imageCredit) && (
+            <figcaption>{d.imageAlt}{d.imageCredit && ` · ${d.imageCredit}`}</figcaption>
+          )}
+        </figure>
+      )}
+
+      <div class="prose">
+        <Content />
+      </div>
+
+      <div class="after">
+        {d.sources.length > 0 && (
+          <section class="sources">
+            <h2>{t.sources}</h2>
+            <ol>
+              {d.sources.map((s) => (
+                <li>{s.url ? <a href={s.url} target="_blank" rel="noopener">{s.title}</a> : s.title}</li>
+              ))}
+            </ol>
+          </section>
+        )}
+        <ShareButtons title={d.title} lang={d.lang} />
+      </div>
+    </div>
+  </article>
+
+  {related.length > 0 && (
+    <div class="wrap">
+      <div class="section-title"><h2>{d.lang === 'mr' ? 'आणखी वाचा' : 'More from this section'}</h2></div>
+      <div class="cards">{related.map((a) => <ArticleCard article={a} />)}</div>
+    </div>
+  )}
+</Base>

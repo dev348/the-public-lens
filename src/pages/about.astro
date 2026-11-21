@@ -1,0 +1,46 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE, CATEGORIES, CATEGORY_SLUGS, url } from '../lib/site';
+---
+<Base title="About" current="about">
+  <div class="wrap narrow">
+    <header class="page-head">
+      <div class="kicker">About</div>
+      <h1>What is The Public Lens?</h1>
+      <p>{SITE.tagline}</p>
+    </header>
+
+    <div class="prose" style="margin:0">
+      <p>
+        The Public Lens is an independent online writing platform in English and Marathi. It shares
+        thoughtful articles about politics, society and the issues that affect people's everyday lives.
+      </p>
+      <p>
+        Our aim is to explain issues clearly, to ground our writing in facts and research, and to bring
+        attention to people's own experiences. We are an independent publication. We are not affiliated
+        with any political party, and we are not a breaking-news channel.
+      </p>
+
+      <h2>What we write about</h2>
+      <ul>
+        {CATEGORY_SLUGS.map((s) => (
+          <li><a href={url(`/${s}/`)}><strong>{CATEGORIES[s].en}</strong></a> ({CATEGORIES[s].blurb})</li>
+        ))}
+      </ul>
+    </div>
+
+    <section class="founder">
+      <div class="avatar" aria-hidden="true">MR</div>
+      <div>
+        <h3>Mithila Manohar Raut</h3>
+        <div class="role">Founder and Editor</div>
+        <p style="margin:0">
+          Independent writer and researcher interested in politics, society, democracy and development.
+          With an academic background in Economics and Development Management and experience in
+          development work and grassroots research, she wants to create a space for fact-based writing
+          and people's voices.
+        </p>
+      </div>
+    </section>
+  </div>
+</Base>

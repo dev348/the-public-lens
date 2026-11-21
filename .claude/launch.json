@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "public-lens",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": ["-c", "ASTRO_TELEMETRY_DISABLED=1 BASE_PATH=/the-public-lens/ npx astro preview --port 4321"],
+      "port": 4321
+    }
+  ]
+}

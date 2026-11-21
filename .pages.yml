@@ -1,0 +1,96 @@
+# Pages CMS configuration: https://pagescms.org/docs/configuration/
+# Mithila edits articles at https://app.pagescms.org by signing in with GitHub.
+
+media:
+  input: public/uploads
+  output: /uploads
+
+content:
+  - name: articles
+    label: Articles / लेख
+    type: collection
+    path: src/content/articles
+    filename: "{year}-{month}-{day}-{fields.lang}-{fields.slug}.md"
+    view:
+      fields: [title, lang, category, date, draft]
+      primary: title
+      sort: [date, title]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - name: title
+        label: Title / शीर्षक
+        type: string
+        required: true
+      - name: slug
+        label: Web address (English words with dashes, e.g. farmers-protest-explained)
+        description: Give the English and Marathi versions of the same article the SAME web address. They will then link to each other automatically.
+        type: string
+        required: true
+        pattern:
+          regex: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          message: Use lowercase English letters, numbers and dashes only.
+      - name: description
+        label: Short summary (shown on cards and when shared)
+        type: text
+      - name: lang
+        label: Language / भाषा
+        type: select
+        default: en
+        options:
+          values:
+            - { name: en, label: English }
+            - { name: mr, label: मराठी }
+      - name: category
+        label: Section
+        type: select
+        required: true
+        options:
+          values:
+            - { name: politics, label: Politics / राजकारण }
+            - { name: society, label: Society / समाज }
+            - { name: education-development, label: Education & Development / शिक्षण आणि विकास }
+            - { name: ground-stories, label: Ground Stories / जमिनीवरच्या गोष्टी }
+            - { name: ideas-books, label: Ideas & Books / विचार आणि पुस्तके }
+      - name: date
+        label: Publish date
+        type: date
+        required: true
+      - name: updated
+        label: Updated on (optional)
+        type: date
+        default: ""
+      - name: author
+        label: Author / लेखक
+        type: string
+        default: Mithila Manohar Raut
+      - name: image
+        label: Main photo
+        type: image
+      - name: imageAlt
+        label: Photo description (for captions and screen readers)
+        type: string
+      - name: imageCredit
+        label: Photo credit
+        type: string
+      - name: sources
+        label: Sources / संदर्भ
+        type: object
+        list: true
+        fields:
+          - { name: title, label: Source name, type: string, required: true }
+          - { name: url, label: Link (optional), type: string }
+      - name: featured
+        label: Feature on home page
+        type: boolean
+        default: false
+      - name: draft
+        label: Draft (hide from the website)
+        type: boolean
+        default: true
+      - name: body
+        label: Article / लेख
+        type: rich-text
+        options:
+          format: markdown

@@ -1,0 +1,29 @@
+---
+import Base from '../layouts/Base.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import { getArticles } from '../lib/articles';
+import { CATEGORIES, CATEGORY_SLUGS, type CategorySlug } from '../lib/site';
+
+export function getStaticPaths() {
+  return CATEGORY_SLUGS.map((category) => ({ params: { category } }));
+}
+
+const category = Astro.params.category as CategorySlug;
+const info = CATEGORIES[category];
+// Section pages show English and Marathi writing together, newest first.
+const articles = await getArticles({ category });
+---
+<Base title={info.en} description={info.blurb} current={category}>
+  <div class="wrap">
+    <header class="page-head">
+      <div class="kicker">Section · <span lang="mr">{info.mr}</span></div>
+      <h1>{info.en}</h1>
+      <p>{info.blurb}</p>
+    </header>
+    {articles.length ? (
+      <div class="cards">{articles.map((a) => <ArticleCard article={a} showLang />)}</div>
+    ) : (
+      <p class="empty-note">No articles in this section yet. New writing is on the way.</p>
+    )}
+  </div>
+</Base>

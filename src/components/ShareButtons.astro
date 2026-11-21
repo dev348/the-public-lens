@@ -1,0 +1,40 @@
+---
+import { UI } from '../lib/site';
+interface Props { title: string; lang?: 'en' | 'mr' }
+const { title, lang = 'en' } = Astro.props;
+const t = UI[lang];
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const u = encodeURIComponent(pageUrl);
+const text = encodeURIComponent(title);
+---
+<div class="share" data-share data-title={title} data-url={pageUrl} data-copied={t.copied}>
+  <span class="share-label">{t.share}:</span>
+  <a href={`https://wa.me/?text=${text}%20${u}`} target="_blank" rel="noopener">WhatsApp</a>
+  <a href={`https://twitter.com/intent/tweet?text=${text}&url=${u}`} target="_blank" rel="noopener">X</a>
+  <a href={`https://www.facebook.com/sharer/sharer.php?u=${u}`} target="_blank" rel="noopener">Facebook</a>
+  <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${u}`} target="_blank" rel="noopener">LinkedIn</a>
+  <button type="button" data-copy>{t.copyLink}</button>
+  <button type="button" data-native hidden>{t.share}…</button>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-share]').forEach((box) => {
+    const { title = '', url = location.href, copied = 'Copied' } = box.dataset;
+    const copyBtn = box.querySelector<HTMLButtonElement>('[data-copy]')!;
+    copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(url);
+        const old = copyBtn.textContent;
+        copyBtn.textContent = copied;
+        setTimeout(() => (copyBtn.textContent = old), 1800);
+      } catch {
+        prompt('Copy this link:', url);
+      }
+    });
+    const nativeBtn = box.querySelector<HTMLButtonElement>('[data-native]')!;
+    if (navigator.share) {
+      nativeBtn.hidden = false;
+      nativeBtn.addEventListener('click', () => navigator.share({ title, url }).catch(() => {}));
+    }
+  });
+</script>

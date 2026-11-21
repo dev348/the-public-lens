@@ -1,0 +1,3 @@
+site: dist
+# One combined index so a single search box finds English and Marathi articles.
+force_language: en

@@ -1,0 +1,29 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE } from '../lib/site';
+---
+<Base title="Contact" current="contact">
+  <div class="wrap narrow">
+    <header class="page-head">
+      <div class="kicker">Contact</div>
+      <h1>Write to us</h1>
+      <p>Story ideas, ground reports, corrections, or a book we should read? We'd love to hear from you.</p>
+    </header>
+    <div class="prose" style="margin:0">
+      <p>
+        Email: <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+      </p>
+      <p>
+        If you want to share a story from your village, town or city, tell us briefly what happened, where,
+        and how we can reach you. We read every message. We will never publish your name or details
+        without your permission.
+      </p>
+      <p lang="mr">
+        तुम्ही मराठीतूनही लिहू शकता. तुमच्या गावातील, शहरातील अनुभव आम्हाला कळवा.
+      </p>
+      {SITE.social.length > 0 && (
+        <ul>{SITE.social.map((s) => <li><a href={s.url} target="_blank" rel="noopener">{s.label}</a></li>)}</ul>
+      )}
+    </div>
+  </div>
+</Base>

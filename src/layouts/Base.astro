@@ -1,0 +1,154 @@
+---
+import '../styles/global.css';
+import Logo from '../components/Logo.astro';
+import { SITE, CATEGORIES, CATEGORY_SLUGS, url } from '../lib/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  lang?: 'en' | 'mr';
+  image?: string;
+  /** Nav key to highlight: 'home', a category slug, 'mr', 'about', 'contact', 'search'. */
+  current?: string;
+  /** Link for the language toggle (e.g. the translated article). */
+  altLangHref?: string;
+  type?: 'website' | 'article';
+}
+
+const {
+  title,
+  description = SITE.description,
+  lang = 'en',
+  image,
+  current,
+  altLangHref,
+  type = 'website',
+} = Astro.props;
+
+const mr = lang === 'mr';
+const fullTitle = title ? `${title} · ${SITE.name}` : `${SITE.name} — ${SITE.tagline}`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = image ? new URL(url(image), Astro.site).href : undefined;
+
+const nav = [
+  { key: 'home', href: '/', label: mr ? 'मुख्यपृष्ठ' : 'Home' },
+  ...CATEGORY_SLUGS.map((slug) => ({
+    key: slug,
+    href: `/${slug}/`,
+    label: mr ? CATEGORIES[slug].mr : CATEGORIES[slug].en,
+  })),
+  { key: 'mr', href: '/mr/', label: 'मराठी' },
+  { key: 'about', href: '/about/', label: mr ? 'आमच्याविषयी' : 'About' },
+  { key: 'contact', href: '/contact/', label: mr ? 'संपर्क' : 'Contact' },
+];
+
+const toggleHref = altLangHref ?? (mr ? '/' : '/mr/');
+---
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href={url('/favicon.svg')} />
+    <link rel="sitemap" href={url('/sitemap-index.xml')} />
+    <meta name="theme-color" content="#14233f" />
+
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={title ?? SITE.name} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={mr ? 'mr_IN' : 'en_IN'} />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+Devanagari:wght@400;600&family=Noto+Serif+Devanagari:wght@400;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap"
+    />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="masthead">
+      <div class="wrap masthead-top">
+        <a class="logo" href={url('/')} aria-label={`${SITE.name} home`}>
+          <Logo />
+          <span class="logo-word">
+            THE PUBLIC LENS
+            <small>{mr ? SITE.taglineMr : SITE.tagline}</small>
+          </span>
+        </a>
+        <div class="head-tools">
+          <a class="pill" href={url('/search/')} aria-label={mr ? 'शोधा' : 'Search'}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <span class="visually-hidden">{mr ? 'शोधा' : 'Search'}</span>
+          </a>
+          <a class="pill" href={url(toggleHref)} lang={mr ? 'en' : 'mr'}>{mr ? 'English' : 'मराठी'}</a>
+          <button class="pill menu-btn" type="button" aria-expanded="false" aria-controls="mainnav" aria-label={mr ? 'मेनू' : 'Menu'}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+          </button>
+        </div>
+      </div>
+      <nav class="mainnav" id="mainnav" aria-label="Sections">
+        <ul class="wrap">
+          {nav.map((n) => (
+            <li>
+              <a href={url(n.href)} aria-current={current === n.key ? 'page' : undefined} lang={n.key === 'mr' ? 'mr' : undefined}>
+                {n.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </header>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <footer class="footer">
+      <div class="wrap">
+        <div class="footer-grid">
+          <div>
+            <a class="logo" href={url('/')}><Logo size={34} /><span class="logo-word">THE PUBLIC LENS</span></a>
+            <p>{SITE.tagline}<br /><span lang="mr">{SITE.taglineMr}</span></p>
+          </div>
+          <div>
+            <h4>Sections</h4>
+            <ul>
+              {CATEGORY_SLUGS.map((s) => <li><a href={url(`/${s}/`)}>{CATEGORIES[s].en}</a></li>)}
+            </ul>
+          </div>
+          <div>
+            <h4>The Public Lens</h4>
+            <ul>
+              <li><a href={url('/about/')}>About</a></li>
+              <li><a href={url('/contact/')}>Contact</a></li>
+              <li><a href={url('/mr/')} lang="mr">मराठी</a></li>
+              <li><a href={url('/search/')}>Search</a></li>
+              <li><a href={url('/rss.xml')}>RSS</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          © {new Date().getFullYear()} The Public Lens. Independent writing in English and Marathi.
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const btn = document.querySelector<HTMLButtonElement>('.menu-btn');
+      const nav = document.getElementById('mainnav');
+      btn?.addEventListener('click', () => {
+        const open = nav!.classList.toggle('open');
+        btn.setAttribute('aria-expanded', String(open));
+      });
+    </script>
+  </body>
+</html>

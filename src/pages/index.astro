@@ -1,0 +1,68 @@
+---
+import Base from '../layouts/Base.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import { getArticles, articlePath } from '../lib/articles';
+import { SITE, CATEGORIES, CATEGORY_SLUGS, url, formatDate } from '../lib/site';
+
+const english = await getArticles({ lang: 'en' });
+const marathi = await getArticles({ lang: 'mr' });
+const lead = english.find((a) => a.data.featured) ?? english[0];
+const rest = english.filter((a) => a !== lead).slice(0, 6);
+---
+<Base current="home">
+  <div class="wrap">
+    <section class="hero">
+      <p class="hero-tag">{SITE.tagline}</p>
+
+      {lead ? (
+        <div class="lead">
+          <a class:list={['card-img', { empty: !lead.data.image }]} href={url(articlePath(lead))} tabindex="-1" aria-hidden="true">
+            {lead.data.image ? (
+              <img src={url(lead.data.image)} alt="" />
+            ) : (
+              <svg width="72" height="72" viewBox="0 0 48 48" fill="none"><path d="M8 24c4.5-7 10-10.5 16-10.5S35.5 17 40 24c-4.5 7-10 10.5-16 10.5S12.5 31 8 24Z" stroke="currentColor" stroke-width="2"/><circle cx="24" cy="24" r="6" fill="currentColor"/></svg>
+            )}
+          </a>
+          <div>
+            <div class="meta"><a class="cat" href={url(`/${lead.data.category}/`)}>{CATEGORIES[lead.data.category].en}</a></div>
+            <h2><a href={url(articlePath(lead))}>{lead.data.title}</a></h2>
+            <p>{lead.data.description}</p>
+            <div class="meta">
+              <span>{lead.data.author}</span><span aria-hidden="true">·</span>
+              <time datetime={lead.data.date.toISOString()}>{formatDate(lead.data.date)}</time>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <p class="empty-note">No articles yet. New writing is on the way.</p>
+      )}
+    </section>
+
+    {rest.length > 0 && (
+      <>
+        <div class="section-title"><h2>Latest</h2></div>
+        <div class="cards">{rest.map((a) => <ArticleCard article={a} />)}</div>
+      </>
+    )}
+
+    <div class="section-title">
+      <h2 lang="mr">मराठी लेख</h2>
+      <a href={url('/mr/')} lang="mr">सर्व मराठी लेख →</a>
+    </div>
+    {marathi.length > 0 ? (
+      <div class="cards">{marathi.slice(0, 3).map((a) => <ArticleCard article={a} />)}</div>
+    ) : (
+      <p class="empty-note" lang="mr">लवकरच मराठी लेख येत आहेत.</p>
+    )}
+
+    <div class="section-title"><h2>Sections</h2></div>
+    <div class="cat-grid">
+      {CATEGORY_SLUGS.map((s) => (
+        <a class="cat-tile" href={url(`/${s}/`)}>
+          <strong>{CATEGORIES[s].en}</strong>
+          <span>{CATEGORIES[s].blurb}</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</Base>
